@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test';
-import EditArticlePage from '../../pages/article/EditArticlePage';
+import { EditArticlePage } from '../../pages/article/EditArticlePage';
 
 export default class EditArticleActions {
   constructor(page) {

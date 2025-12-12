@@ -1,72 +1,55 @@
-import { test, expect } from '@playwright/test';
+import { test } from '@playwright/test';
 import { EditArticlePage } from '../../pages/article/EditArticlePage';
 
-export default class EditArticleActions {
+export class EditArticleAction {
   constructor(page) {
     this.page = page;
     this.editArticlePage = new EditArticlePage(page);
   }
 
-  async openEditArticleFromSlug(slug) {
+  async open(slug) {
     await this.editArticlePage.openFromArticleSlug(slug);
   }
 
   async editTitle(value) {
-    await this.editArticlePage.fillTitleField(value);
+    await test.step(`Edit article title to "${value}"`, async () => {
+      await this.editArticlePage.fillTitleField(value);
+    });
+  }
+
+  async clearTitle() {
+    await test.step(`Clear article title`, async () => {
+      await this.editArticlePage.clearTitle();
+    });
   }
 
   async editDescription(value) {
     await this.editArticlePage.fillDescriptionField(value);
   }
 
-  async editText(value) {
-    await this.editArticlePage.fillTextField(value);
-  }
-
-  async clearTitle() {
-    await this.editArticlePage.clearTitle();
-  }
-
   async clearDescription() {
     await this.editArticlePage.clearDescription();
+  }
+
+  async editText(value) {
+    await this.editArticlePage.fillTextField(value);
   }
 
   async clearText() {
     await this.editArticlePage.clearText();
   }
 
-  async addTag(tag) {
-    await test.step(`Add tag: ${tag}`, async () => {
-      await this.editArticlePage.tagsField.fill(tag);
-      await this.page.keyboard.press('Enter');
+  async addTag(value) {
+    await test.step(`Add tag "${value}"`, async () => {
+      await this.editArticlePage.addTag(value);
     });
   }
 
-  async submitEditedArticle() {
-    await this.editArticlePage.updateArticleButton.click();
+  async removeTag(value) {
+    await this.editArticlePage.removeTag(value);
   }
 
-  async expectErrorMessage(message) {
-    await test.step(`Expect error message: ${message}`, async () => {
-      await expect(this.editArticlePage.errorMessage).toHaveText(message);
-    });
-  }
-
-  async expectTitleIs(value) {
-    await test.step(`Validate title is: ${value}`, async () => {
-      await expect(this.editArticlePage.titleField).toHaveValue(value);
-    });
-  }
-
-  async expectDescriptionIs(value) {
-    await test.step(`Validate description is: ${value}`, async () => {
-      await expect(this.editArticlePage.descriptionField).toHaveValue(value);
-    });
-  }
-
-  async expectTextIs(value) {
-    await test.step(`Validate text is updated`, async () => {
-      await expect(this.editArticlePage.textField).toHaveValue(value);
-    });
+  async submit() {
+    await this.editArticlePage.submitEditedArticle();
   }
 }
